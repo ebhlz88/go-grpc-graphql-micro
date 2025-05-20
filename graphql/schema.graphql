@@ -39,6 +39,8 @@ input AccountInput {
 
 input ProductInput {
   name: String!
+  description: String!
+  price: Float!
 }
 
 input OrderProductInput {

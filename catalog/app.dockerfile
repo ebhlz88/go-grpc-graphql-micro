@@ -1,4 +1,4 @@
-FROM golang:1.22.2-alphine3.21 AS build
+FROM golang:1.23.9-alpine AS build
 RUN apk --no-cache add gcc g++ make ca-certificates
 WORKDIR /go/src/github.com/ebhlz88/go-grpc-graphql-micro
 COPY go.mod go.sum ./

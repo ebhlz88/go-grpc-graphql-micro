@@ -10,3 +10,6 @@
 9. create the pb falder in your project
 10. add this to account.proto option go package "github.com/ebhlz88/go-grpc-graphql-micro/account/pb":
 11. finally run this command - protoc --go_out=./pb --go-grpc_out=./pb account.proto
+
+-- generate graphql
+go run github.com/99designs/gqlgen generate

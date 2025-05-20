@@ -13,6 +13,7 @@ require (
 	github.com/vektah/gqlparser/v2 v2.5.26
 	google.golang.org/grpc v1.72.0
 	google.golang.org/protobuf v1.36.6
+	gopkg.in/olivere/elastic.v5 v5.0.86
 )
 
 require (
@@ -28,5 +29,4 @@ require (
 	golang.org/x/sys v0.32.0 // indirect
 	golang.org/x/text v0.24.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250218202821-56aae31c358a // indirect
-	gopkg.in/olivere/elastic.v5 v5.0.86 // indirect
 )
