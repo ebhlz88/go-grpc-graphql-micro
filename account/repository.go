@@ -39,7 +39,7 @@ func (r *postgresRepository) Close() {
 	r.db.Close()
 }
 func (r *postgresRepository) PutAccount(ctx context.Context, a Account) error {
-	_, err := r.db.ExecContext(ctx, "INSERT INTO accounts (id, name) VALUES ($1, $2", a.ID, a.Name)
+	_, err := r.db.ExecContext(ctx, "INSERT INTO accounts (id, name) VALUES ($1, $2)", a.ID, a.Name)
 	return err
 }
 func (r *postgresRepository) GetAccountByID(ctx context.Context, id string) (*Account, error) {
@@ -51,7 +51,7 @@ func (r *postgresRepository) GetAccountByID(ctx context.Context, id string) (*Ac
 	return a, nil
 }
 func (r *postgresRepository) ListAccounts(ctx context.Context, skip uint64, take uint64) ([]Account, error) {
-	rows, err := r.db.QueryContext(ctx, "SELECT id, name FROM accounts ORDER BY DESC OFFSET $1 LIMIT $2", skip, take)
+	rows, err := r.db.QueryContext(ctx, "SELECT id, name FROM accounts ORDER BY id DESC OFFSET $1 LIMIT $2", skip, take)
 	if err != nil {
 		return nil, err
 	}

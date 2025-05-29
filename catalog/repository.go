@@ -63,7 +63,7 @@ func (r *elasticRepository) PutProduct(ctx context.Context, p Product) error {
 }
 
 func (r *elasticRepository) GetProductByID(ctx context.Context, id string) (*Product, error) {
-	res, err := r.client.Get().Index("catalog").Type("Product").Id(id).Do(ctx)
+	res, err := r.client.Get().Index("catalog").Type("product").Id(id).Do(ctx)
 	if err != nil {
 		return nil, err
 	}

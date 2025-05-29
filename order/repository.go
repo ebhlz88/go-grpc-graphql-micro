@@ -47,7 +47,7 @@ func (r *postgresRepository) PutOrder(ctx context.Context, o Order) (err error) 
 		}
 		err = tx.Commit()
 	}()
-	tx.ExecContext(
+	_, err = tx.ExecContext(
 		ctx,
 		"INSERT INTO orders(id, created_at, account_id, total_price) VALUES ($1, $2, $3, $4)",
 		o.ID,
@@ -60,7 +60,7 @@ func (r *postgresRepository) PutOrder(ctx context.Context, o Order) (err error) 
 	}
 	stmt, _ := tx.PrepareContext(
 		ctx,
-		pq.CopyIn("order_product", "order_id", "product_id", "quantity"),
+		pq.CopyIn("order_products", "order_id", "product_id", "quantity"),
 	)
 	for _, p := range o.Products {
 		_, err := stmt.ExecContext(ctx, o.ID, p.ID, p.Quantity)
@@ -86,8 +86,8 @@ func (r *postgresRepository) GetOrderForAccount(ctx context.Context, accountID s
 		o.total_price::money::numeric::float8,
 		op.product_id,
 		op.quantity
-		FROM orders o JOIN order_product op ON(o.id = op.order_id)
-		WHERE o.account_id = $1,
+		FROM orders o JOIN order_products op ON(o.id = op.order_id)
+		WHERE o.account_id = $1
 		ORDER BY o.id 
 		`, accountID,
 	)
@@ -113,6 +113,7 @@ func (r *postgresRepository) GetOrderForAccount(ctx context.Context, accountID s
 			return nil, err
 		}
 		if lastOrder.ID != "" && lastOrder.ID != order.ID {
+			lastOrder.Products = products
 			newOrds := Order{
 				ID:         lastOrder.ID,
 				AccountID:  lastOrder.AccountID,
@@ -131,14 +132,8 @@ func (r *postgresRepository) GetOrderForAccount(ctx context.Context, accountID s
 		*lastOrder = *order
 	}
 	if lastOrder != nil {
-		newOrds := Order{
-			ID:         lastOrder.ID,
-			AccountID:  lastOrder.AccountID,
-			CreatedAt:  lastOrder.CreatedAt,
-			TotalPrice: lastOrder.TotalPrice,
-			Products:   lastOrder.Products,
-		}
-		orders = append(orders, newOrds)
+		lastOrder.Products = products
+		orders = append(orders, *lastOrder)
 	}
 	if err = rows.Err(); err != nil {
 		return nil, err
